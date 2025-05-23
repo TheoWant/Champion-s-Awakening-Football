@@ -10,22 +10,37 @@ public class FilesManager : MonoBehaviour
     void Start()
     {
         // Spécifie le chemin de du dossier StreamingAssets et PersistantDataPath
-        string streamingAssetsPath = Path.Combine(Application.streamingAssetsPath);
-        string persistantDataPath = Path.Combine(Application.persistentDataPath);
+        string streamingAssetsPath = Application.streamingAssetsPath;
+        string persistentDataPath = Application.persistentDataPath;
 
 
-        foreach (string streaminAssetsFile  in Directory.GetFiles(streamingAssetsPath))
+        foreach (string sourceFilePath in Directory.GetFiles(streamingAssetsPath))
         {
-            string file = Path.GetFileName(streaminAssetsFile);
-            if (!File.Exists(persistantDataPath+"/"+file))
+            string fileName = Path.GetFileName(sourceFilePath);
+            string destFilePath = Path.Combine(persistentDataPath, fileName);
+
+            if (!(fileName.Substring(fileName.Length - 4, 4) == "meta"))
+                CopyFile(sourceFilePath, destFilePath);
+        }
+        foreach (string sourceFolderPath in Directory.GetDirectories(streamingAssetsPath))
+        {
+            string folderName = Path.GetFileName(sourceFolderPath);
+            string destFolderPath = Path.Combine(persistentDataPath, folderName);
+
+            CreateFolder(destFolderPath);
+            foreach (string sourceFilePath in Directory.GetFiles(sourceFolderPath))
             {
-                CopyDatabase(streaminAssetsFile, persistantDataPath + "/" + file);
+                string fileName = Path.GetFileName(sourceFilePath);
+                string destFilePath = Path.Combine(destFolderPath, fileName);
+
+                if(!(fileName.Substring(fileName.Length-4,4) == "meta"))
+                    CopyFile(sourceFilePath, destFilePath);
             }
         }
     }
 
     // Méthode pour copier le fichier depuis StreamingAssets vers persistentDataPath
-    private void CopyDatabase(string sourcePath, string destinationPath)
+    private void CopyFile(string sourcePath, string destinationPath)
     {
         // Vérifie si le fichier existe déjà dans le répertoire de destination
         if (File.Exists(destinationPath))
@@ -45,6 +60,18 @@ public class FilesManager : MonoBehaviour
         {
             Debug.LogError("Le fichier source n'existe pas dans StreamingAssets.");
         }
+    }
+
+    private void CreateFolder(string destinationPath)
+    {
+        if (Directory.Exists(destinationPath))
+        {
+            Debug.Log("Le dossier existe déjà dans persistentDataPath.");
+            return;
+        }
+
+        Directory.CreateDirectory(destinationPath);
+        Debug.Log("Dossier créé dans persistentDataPath.");
     }
 }
 

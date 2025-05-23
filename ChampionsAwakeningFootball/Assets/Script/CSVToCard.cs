@@ -34,7 +34,7 @@ public class CSVToCard : MonoBehaviour
 
     public List<CardMatch> Cards;
 
-    private void Start()
+    private void Awake()
     {
         path_match = Path.Combine(Application.persistentDataPath, "Card_Match.csv");
 
@@ -95,6 +95,6 @@ public class CSVToCard : MonoBehaviour
         SaveObject save = new SaveObject();
         save.cardMatchList = Cards;
 
-        //SaveManagement.Write(save , Path.Combine(Application.persistentDataPath, "CardMatch.xml"));
+        SaveManagement.Write(save , Path.Combine(Application.persistentDataPath, "CardMatch.xml"));
     }
 }

@@ -48,7 +48,7 @@ public class MatchManager : MonoBehaviourSingleton<MatchManager>
 
     void InitStats()
     {
-        _formStat = 5;
+        _formStat = 100;
         _moralStat = 50;
         _aggroStat = 50;
         _confidenceStat = 50;

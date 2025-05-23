@@ -41,13 +41,21 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
         StartCoroutine(SimulateMatch());
     }
 
-    public IEnumerator SimulateMatch()
+    IEnumerator SimulateMatch()
     {
         while (_matchTime < 90 && isSimulating)
         {
-            yield return new WaitForSeconds(0.1f);
-            IncreaseMinuteCounter();
-            yield return null;
+            if (_matchTime == 45)
+            {
+                isSimulating = false;
+                StartCoroutine(HalfTime());
+            }
+            else
+            {
+                yield return new WaitForSeconds(0.1f);
+                IncreaseMinuteCounter();
+                yield return null;
+            }
         }
         yield return null;
     }
@@ -79,7 +87,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
                 return;
             }
 
-            if (actionProb > 10 && actionProb <= 16)
+            if (actionProb > 10 && actionProb <= 17)
             {
                 isSimulating = false;
                 _playerMomentMenu.SetActive(true);
@@ -119,8 +127,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
 
         yield return null;
 
-        _scrollRect.verticalNormalizedPosition = 0f; // Scroller automatiquement vers le bas le scroll view pour afficher toujours le message le plus recent
-        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_contentTransform);
+        ContentScroll();
 
         yield return new WaitForSeconds(2f);
 
@@ -172,8 +179,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
 
         yield return null;
 
-        _scrollRect.verticalNormalizedPosition = 0f; // Scroller automatiquement vers le bas le scroll view pour afficher toujours le message le plus recent
-        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_contentTransform);
+        ContentScroll();
 
         yield return new WaitForSeconds(0.7f);
 
@@ -181,6 +187,53 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
         StartCoroutine(SimulateMatch());
 
         yield return null;
+    }
+
+    IEnumerator HalfTime()
+    {
+        GameObject message1 = Instantiate(_messagePrefab, _contentTransform);
+        MatchMessage matchMessage1 = message1.GetComponent<MatchMessage>();
+
+        matchMessage1._MainMessageText.text = "-------- MI-TEMPS --------";
+        matchMessage1._background.color = Color.gray;
+        matchMessage1._background.transform.GetChild(0).gameObject.SetActive(false);
+        matchMessage1._MainMessageText.color = GetContrastingTextColor(matchMessage1._background.color);
+        matchMessage1._messageTimeImage.color = GetContrastingTextColor(matchMessage1._background.color);
+        matchMessage1._separator.color = GetContrastingTextColor(matchMessage1._background.color);
+        matchMessage1._textTime.color = GetContrastingTextColor(matchMessage1._background.color);
+
+        yield return null;
+
+        ContentScroll();
+
+        yield return new WaitForSeconds(2f);
+
+        GameObject message2 = Instantiate(_messagePrefab, _contentTransform);
+        MatchMessage matchMessage2 = message2.GetComponent<MatchMessage>();
+
+        matchMessage2._MainMessageText.text = "--- DÉBUT DE LA SECONDE PERIODE ---";
+        matchMessage2._background.color = Color.gray;
+        matchMessage2._background.transform.GetChild(0).gameObject.SetActive(false);
+        matchMessage2._MainMessageText.color = GetContrastingTextColor(matchMessage2._background.color);
+        matchMessage2._messageTimeImage.color = GetContrastingTextColor(matchMessage2._background.color);
+        matchMessage2._separator.color = GetContrastingTextColor(matchMessage2._background.color);
+        matchMessage2._textTime.color = GetContrastingTextColor(matchMessage2._background.color);
+
+        yield return null;
+
+        ContentScroll();
+
+        isSimulating = true;
+        IncreaseMinuteCounter();
+        StartCoroutine(SimulateMatch());
+
+        yield return null;
+    }
+
+    void ContentScroll()
+    {
+        _scrollRect.verticalNormalizedPosition = 0f; // Scroller automatiquement vers le bas le scroll view pour afficher toujours le message le plus recent
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_contentTransform);
     }
 
     public static Color GetContrastingTextColor(Color TeamColor)

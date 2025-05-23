@@ -10,10 +10,11 @@ public class CardDatas : MonoBehaviour
     [SerializeField] public string _message;
     [SerializeField] public string _answer1;
     [SerializeField] public string _answer2;
-    [SerializeField] public Sprite _cardImage;
+    [SerializeField] public Sprite _cardSprite;
 
     [SerializeField] public TextMeshProUGUI answer1Text;
     [SerializeField] public TextMeshProUGUI answer2Text;
+    [SerializeField] public Image _cardImage;
 
     private void Start()
     {

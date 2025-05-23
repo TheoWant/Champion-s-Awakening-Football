@@ -1363,6 +1363,20 @@ MonoBehaviour:
   _confidenceStatImpact: 0
   _disciplineStatImpact: 0
   _noteImpact: 0
+  _nextCard:
+    _id: 
+    _text: 
+    _choice_A: 
+    _choice_B: 
+    _impactC1: 
+    _impactC2: 
+    nextCard_ChoiceA_1: 
+    nextCard_ChoiceA_2: 
+    proba_nC_CA1: 0
+    nextCard_ChoiceB_1: 
+    nextCard_ChoiceB_2: 
+    proba_nC_CB1: 0
+    imageFileName: 
 --- !u!1 &3665158151388384392
 GameObject:
   m_ObjectHideFlags: 0
@@ -1662,9 +1676,10 @@ MonoBehaviour:
     produit de ta part.\""
   _answer1: Accepter
   _answer2: Refuser
-  _cardImage: {fileID: 0}
+  _cardSprite: {fileID: 0}
   answer1Text: {fileID: 905132633216560106}
   answer2Text: {fileID: 7534360467422661972}
+  _cardImage: {fileID: 5733897435998007586}
 --- !u!114 &2284979246650056177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2772,6 +2787,20 @@ MonoBehaviour:
   _confidenceStatImpact: 0
   _disciplineStatImpact: 0
   _noteImpact: 0
+  _nextCard:
+    _id: 
+    _text: 
+    _choice_A: 
+    _choice_B: 
+    _impactC1: 
+    _impactC2: 
+    nextCard_ChoiceA_1: 
+    nextCard_ChoiceA_2: 
+    proba_nC_CA1: 0
+    nextCard_ChoiceB_1: 
+    nextCard_ChoiceB_2: 
+    proba_nC_CB1: 0
+    imageFileName: 
 --- !u!1 &8059367909362622389
 GameObject:
   m_ObjectHideFlags: 0

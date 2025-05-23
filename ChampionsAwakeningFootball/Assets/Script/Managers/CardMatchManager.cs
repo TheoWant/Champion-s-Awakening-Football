@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 
 public class CardMatchManager : MonoBehaviourSingleton<CardMatchManager>
@@ -8,6 +9,7 @@ public class CardMatchManager : MonoBehaviourSingleton<CardMatchManager>
     [SerializeField] GameObject _cardPrefab;
     [SerializeField] public Transform _cardContainer;
 
+    [SerializeField] TextMeshProUGUI _cardMessage;
 
     public List<CardMatch> _classicMatchCard;
     public List<CardMatch> _specialMatchCard;
@@ -52,6 +54,13 @@ public class CardMatchManager : MonoBehaviourSingleton<CardMatchManager>
         cd._answer1 = cm._choice_A;
         cd._answer2 = cm._choice_B;
 
+        Debug.Log(Path.Combine(Application.persistentDataPath, "Card", cm.imageFileName));
+
+        cd._cardSprite = LoadSprite(Path.Combine(Application.persistentDataPath, "Card", cm.imageFileName));
+        cd._cardImage.sprite = cd._cardSprite;
+
+        _cardMessage.text = cd._message;
+
         SetupImpact(cd.answer1Text.GetComponent<AnswerImpact>(), cm._impactC1, cm.nextCard_ChoiceA_1, cm.nextCard_ChoiceA_2, cm.proba_nC_CA1);
         SetupImpact(cd.answer2Text.GetComponent<AnswerImpact>(), cm._impactC2, cm.nextCard_ChoiceB_1, cm.nextCard_ChoiceB_2, cm.proba_nC_CB1);
 
@@ -85,5 +94,30 @@ public class CardMatchManager : MonoBehaviourSingleton<CardMatchManager>
         ai._disciplineStatImpact = impacts[4];
         ai._noteImpact = impacts[5];
         ai._nextCard = FindCard(RandomNextCard(id1, id2, proba));
+    }
+
+    Sprite LoadSprite(string filePath, float PixelsPerUnit = 100.0f)
+    {
+        Sprite NewSprite;
+        Texture2D SpriteTexture = LoadTexture(filePath);
+        Debug.Log(SpriteTexture);
+        NewSprite = Sprite.Create(SpriteTexture, new Rect(0, 0, SpriteTexture.width, SpriteTexture.height), new Vector2(0, 0), PixelsPerUnit);
+        return NewSprite;
+    }
+
+    public Texture2D LoadTexture(string filePath)
+    {
+        Texture2D Tex2D;
+        byte[] FileData;
+
+        if (File.Exists(filePath))
+        {
+            FileData = File.ReadAllBytes(filePath);
+            Tex2D = new Texture2D(2, 2);
+            Tex2D.name = "ImageCardTexture";
+            if (Tex2D.LoadImage(FileData))
+                return Tex2D;
+        }
+        return null;
     }
 }
