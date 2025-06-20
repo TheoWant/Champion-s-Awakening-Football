@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
@@ -12,12 +13,14 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
     int _homeStrength;
     int _awayStrength;
 
-    int _homeScore;
-    int _awayScore;
+    List<string> actionSentences;
+    List<string> goalSentences;
+    List<string> failSentences;
 
     [SerializeField] GameObject _messagePrefab;
     [SerializeField] Transform _contentTransform;
     [SerializeField] ScrollRect _scrollRect;
+    [SerializeField] CSVElementLoader csvElementLoader;
 
     public TextMeshProUGUI MatchTime;
 
@@ -25,7 +28,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
 
     public bool isSimulating;
 
-    private void Start()
+    async void Start()
     {
         _matchTime = 1;
         _homeStrength = (int)MatchDataManager.Instance.currentMatchData._homeTeamStrength+5;
@@ -33,6 +36,10 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
 
         isSimulating = true;
         MatchTime.text = _matchTime+"'";
+
+        await csvElementLoader.LoadCardsAsync();
+        await csvElementLoader.LoadMatchSentencesAsync();
+
         StartCoroutine(SimulateMatch());
     }
 
@@ -57,14 +64,17 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
                 yield return null;
             }
         }
+
+        EndMatch();
+
         yield return null;
     }
+
+    ///---------------------------------------------------------------------------------------------------------------------------------------- 
 
     void IncreaseMinuteCounter()
     {
         _matchTime++;
-
-        MatchManager.Instance._formStat -= Random.Range(0.1f,0.6f);
 
         int actionProb = Random.Range(0, 101);
 
@@ -78,6 +88,8 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
 
         if (MatchManager.Instance._isOnPitch)
         {
+            MatchManager.Instance._formStat -= Random.Range(0.1f, 0.6f);
+
             if (MatchManager.Instance._formStat <= 0)
             {
                 isSimulating = false;
@@ -96,98 +108,112 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
         }
     }
 
+    ///----------------------------------------------------------------------------------------------------------------------------------------
+
     IEnumerator ActionInMatch()
     {
         int teamActionChoice = Random.Range(0, _homeStrength+_awayStrength);
 
         string teamAction = "";
 
-        GameObject message1 = Instantiate(_messagePrefab, _contentTransform);
-        MatchMessage matchMessage1 = message1.GetComponent<MatchMessage>();
-
         if (teamActionChoice > _homeStrength)
         {
-            matchMessage1._MainMessageText.text = "Action pour " + MatchDataManager.Instance.currentMatchData._homeTeam.ToUpper();
-            matchMessage1._background.color = MatchManager.Instance.HexToRgbColor(MatchDataManager.Instance.currentMatchData._homeTeamColors[0]);
+            ActionForTeam("home");
             teamAction = "home";
         }
         else
         {
-            matchMessage1._MainMessageText.text = "Action pour " + MatchDataManager.Instance.currentMatchData._awayTeam.ToUpper();
-            matchMessage1._background.color = MatchManager.Instance.HexToRgbColor(MatchDataManager.Instance.currentMatchData._awayTeamColors[0]);
+            ActionForTeam("away");
             teamAction = "away";
         }
-
-        matchMessage1._MainMessageText.color = GetContrastingTextColor(matchMessage1._background.color);
-        matchMessage1._messageTimeImage.color = GetContrastingTextColor(matchMessage1._background.color);
-        matchMessage1._separator.color = GetContrastingTextColor(matchMessage1._background.color);
-        matchMessage1._textTime.color = GetContrastingTextColor(matchMessage1._background.color);
-
-        matchMessage1._textTime.text = _matchTime.ToString()+"'";
-
         yield return null;
-
         ContentScroll();
 
         yield return new WaitForSeconds(2f);
 
-        int goalChance = Random.Range(0, 350);
-
-        GameObject message2 = Instantiate(_messagePrefab, _contentTransform);
-        MatchMessage matchMessage2 = message2.GetComponent<MatchMessage>();
-
-        switch (teamAction)
-        {
-            
-            case "home":
-                if (goalChance < 2 * _homeStrength - _awayStrength)
-                {
-                    _homeScore++;
-                    MatchManager.Instance._scoreText.text = $"{_homeScore}-{_awayScore}";
-                    matchMessage2._MainMessageText.text = "BUUUUUTTT POUR " + MatchDataManager.Instance.currentMatchData._homeTeam.ToUpper() + " !! Le score est de " + MatchManager.Instance._scoreText.text + " désormais";
-                }
-                else
-                {
-                    matchMessage2._MainMessageText.text = "Mais c'est raté...";
-                }
-                matchMessage2._background.color = MatchManager.Instance.HexToRgbColor(MatchDataManager.Instance.currentMatchData._homeTeamColors[0]);
-
-                break;
-            case "away":
-                if(goalChance < 2 * _awayStrength - _homeStrength)
-                {
-                    _awayScore++;
-                    MatchManager.Instance._scoreText.text = $"{_homeScore}-{_awayScore}";
-                    matchMessage2._MainMessageText.text = "BUUUUUTTT POUR " + MatchDataManager.Instance.currentMatchData._awayTeam.ToUpper()+" !! Le score est de "+ MatchManager.Instance._scoreText.text+" désormais";
-                }
-                else
-                {
-                    matchMessage2._MainMessageText.text = "Mais c'est raté...";
-                }
-                matchMessage2._background.color = MatchManager.Instance.HexToRgbColor(MatchDataManager.Instance.currentMatchData._awayTeamColors[0]);
-                break;
-            default:
-                break;
-        }
-
-        matchMessage2._MainMessageText.color = GetContrastingTextColor(matchMessage2._background.color);
-        matchMessage2._messageTimeImage.color = GetContrastingTextColor(matchMessage2._background.color);
-        matchMessage2._separator.color = GetContrastingTextColor(matchMessage2._background.color);
-        matchMessage2._textTime.color = GetContrastingTextColor(matchMessage2._background.color);
-
-        matchMessage2._textTime.text = _matchTime.ToString()+ "'";
-
+        ActionResult(teamAction);
         yield return null;
-
         ContentScroll();
 
         yield return new WaitForSeconds(0.7f);
 
         isSimulating = true;
         StartCoroutine(SimulateMatch());
-
-        yield return null;
     }
+
+    ///----------------------------------------------------------------------------------------------------------------------------------------
+
+    void ActionForTeam(string team)
+    {
+        GameObject message = Instantiate(_messagePrefab, _contentTransform);
+        MatchMessage matchMessage = message.GetComponent<MatchMessage>();
+
+        if (team == "home")
+        {
+            matchMessage._MainMessageText.text = ActionRandomSentence(MatchDataManager.Instance.currentMatchData._homeTeam.ToUpper());
+            matchMessage._background.color = MatchManager.Instance.HexToRgbColor(MatchDataManager.Instance.currentMatchData._homeTeamColors[0]);
+        }
+        else
+        {
+            matchMessage._MainMessageText.text = ActionRandomSentence(MatchDataManager.Instance.currentMatchData._awayTeam.ToUpper());
+            matchMessage._background.color = MatchManager.Instance.HexToRgbColor(MatchDataManager.Instance.currentMatchData._awayTeamColors[0]);
+        }
+
+        InitMessagesContrast(matchMessage);
+        matchMessage._textTime.text = _matchTime.ToString() + "'";
+    }
+
+
+    ///----------------------------------------------------------------------------------------------------------------------------------------
+
+    void ActionResult(string teamAction)
+    {
+        int goalChance = Random.Range(0, 350);
+
+        GameObject message = Instantiate(_messagePrefab, _contentTransform);
+        MatchMessage matchMessage = message.GetComponent<MatchMessage>();
+
+        switch (teamAction)
+        {
+
+            case "home":
+                if (goalChance < 2 * _homeStrength - _awayStrength)
+                {
+                    MatchManager.Instance._homeTeamScore++;
+                    MatchManager.Instance.SetMatchScoreText();
+
+                    matchMessage._MainMessageText.text = GoalRandomSentence(MatchDataManager.Instance.currentMatchData._homeTeam.ToUpper(), MatchManager.Instance._scoreText.text);
+                }
+                else
+                {
+                    matchMessage._MainMessageText.text = FailRandomSentence(MatchManager.Instance._scoreText.text);
+                }
+                matchMessage._background.color = MatchManager.Instance.HexToRgbColor(MatchDataManager.Instance.currentMatchData._homeTeamColors[0]);
+
+                break;
+            case "away":
+                if (goalChance < 2 * _awayStrength - _homeStrength)
+                {
+                    MatchManager.Instance._awayTeamScore++;
+                    MatchManager.Instance.SetMatchScoreText();
+
+                    matchMessage._MainMessageText.text = GoalRandomSentence(MatchDataManager.Instance.currentMatchData._awayTeam.ToUpper(), MatchManager.Instance._scoreText.text);
+                }
+                else
+                {
+                    matchMessage._MainMessageText.text = FailRandomSentence(MatchManager.Instance._scoreText.text);
+                }
+                matchMessage._background.color = MatchManager.Instance.HexToRgbColor(MatchDataManager.Instance.currentMatchData._awayTeamColors[0]);
+                break;
+            default:
+                break;
+        }
+
+        InitMessagesContrast(matchMessage);
+        matchMessage._textTime.text = _matchTime.ToString() + "'";
+    }
+
+    ///----------------------------------------------------------------------------------------------------------------------------------------
 
     IEnumerator HalfTime()
     {
@@ -197,10 +223,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
         matchMessage1._MainMessageText.text = "-------- MI-TEMPS --------";
         matchMessage1._background.color = Color.gray;
         matchMessage1._background.transform.GetChild(0).gameObject.SetActive(false);
-        matchMessage1._MainMessageText.color = GetContrastingTextColor(matchMessage1._background.color);
-        matchMessage1._messageTimeImage.color = GetContrastingTextColor(matchMessage1._background.color);
-        matchMessage1._separator.color = GetContrastingTextColor(matchMessage1._background.color);
-        matchMessage1._textTime.color = GetContrastingTextColor(matchMessage1._background.color);
+        InitMessagesContrast(matchMessage1);
 
         yield return null;
 
@@ -214,10 +237,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
         matchMessage2._MainMessageText.text = "--- DÉBUT DE LA SECONDE PERIODE ---";
         matchMessage2._background.color = Color.gray;
         matchMessage2._background.transform.GetChild(0).gameObject.SetActive(false);
-        matchMessage2._MainMessageText.color = GetContrastingTextColor(matchMessage2._background.color);
-        matchMessage2._messageTimeImage.color = GetContrastingTextColor(matchMessage2._background.color);
-        matchMessage2._separator.color = GetContrastingTextColor(matchMessage2._background.color);
-        matchMessage2._textTime.color = GetContrastingTextColor(matchMessage2._background.color);
+        InitMessagesContrast(matchMessage2);
 
         yield return null;
 
@@ -230,6 +250,44 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
         yield return null;
     }
 
+
+    void EndMatch()
+    {
+        isSimulating = false;
+         
+
+    }
+
+    ///----------------------------------------------------------------------------------------------------------------------------------------
+
+
+    string ActionRandomSentence(string team)
+    {
+        string sentence;
+        sentence = csvElementLoader.ActionSentences[Random.Range(0, csvElementLoader.ActionSentences.Count)];
+        sentence = sentence.Replace("[team]", team);
+        return sentence;
+    }
+
+    string GoalRandomSentence(string team, string score)
+    {
+        string sentence;
+        sentence = csvElementLoader.GoalSentences[Random.Range(0, csvElementLoader.GoalSentences.Count)];
+        sentence = sentence.Replace("[team]", team);
+        sentence = sentence.Replace("[score]", score);
+        return sentence;
+    }
+
+    string FailRandomSentence(string score)
+    {
+        string sentence;
+        sentence = csvElementLoader.FailSentences[Random.Range(0, csvElementLoader.FailSentences.Count)];
+        sentence = sentence.Replace("[score]", score);
+        return sentence;
+    }
+
+    ///----------------------------------------------------------------------------------------------------------------------------------------
+
     void ContentScroll()
     {
         _scrollRect.verticalNormalizedPosition = 0f; // Scroller automatiquement vers le bas le scroll view pour afficher toujours le message le plus recent
@@ -241,4 +299,14 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
         float luminance = (0.299f * TeamColor.r + 0.587f * TeamColor.g + 0.114f * TeamColor.b);
         return luminance > 0.7f ? Color.black : Color.white;
     }
+
+    void InitMessagesContrast(MatchMessage message)
+    {
+        message._MainMessageText.color = GetContrastingTextColor(message._background.color);
+        message._messageTimeImage.color = GetContrastingTextColor(message._background.color);
+        message._separator.color = GetContrastingTextColor(message._background.color);
+        message._textTime.color = GetContrastingTextColor(message._background.color);
+    }
+
+
 }

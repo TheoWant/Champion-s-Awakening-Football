@@ -1,77 +1,86 @@
 using System.IO;
 using UnityEngine;
-using Mono.Data.Sqlite;
+using System.Threading.Tasks;
 
 public class FilesManager : MonoBehaviour
 {
-    private string dbName;
-    private string cardsFile;
-
-    void Start()
+    async void Start()
     {
-        // Spécifie le chemin de du dossier StreamingAssets et PersistantDataPath
+        await LoadFiles();
+    }
+
+    async Task LoadFiles()
+    {
         string streamingAssetsPath = Application.streamingAssetsPath;
         string persistentDataPath = Application.persistentDataPath;
 
-
-        foreach (string sourceFilePath in Directory.GetFiles(streamingAssetsPath))
+        // Copier les fichiers à la racine
+        string[] files = await Task.Run(() => Directory.GetFiles(streamingAssetsPath));
+        foreach (var sourceFilePath in files)
         {
             string fileName = Path.GetFileName(sourceFilePath);
-            string destFilePath = Path.Combine(persistentDataPath, fileName);
+            if (fileName.EndsWith(".meta")) continue;
 
-            if (!(fileName.Substring(fileName.Length - 4, 4) == "meta"))
-                CopyFile(sourceFilePath, destFilePath);
+            string destFilePath = Path.Combine(persistentDataPath, fileName);
+            await CopyFile(sourceFilePath, destFilePath);
         }
-        foreach (string sourceFolderPath in Directory.GetDirectories(streamingAssetsPath))
+
+        // Copier les dossiers et leur contenu
+        string[] directories = await Task.Run(() => Directory.GetDirectories(streamingAssetsPath));
+        foreach (var sourceFolderPath in directories)
         {
             string folderName = Path.GetFileName(sourceFolderPath);
             string destFolderPath = Path.Combine(persistentDataPath, folderName);
 
-            CreateFolder(destFolderPath);
-            foreach (string sourceFilePath in Directory.GetFiles(sourceFolderPath))
+            await CreateFolder(destFolderPath);
+
+            string[] nestedFiles = await Task.Run(() => Directory.GetFiles(sourceFolderPath));
+            foreach (var sourceFilePath in nestedFiles)
             {
                 string fileName = Path.GetFileName(sourceFilePath);
-                string destFilePath = Path.Combine(destFolderPath, fileName);
+                if (fileName.EndsWith(".meta")) continue;
 
-                if(!(fileName.Substring(fileName.Length-4,4) == "meta"))
-                    CopyFile(sourceFilePath, destFilePath);
+                string destFilePath = Path.Combine(destFolderPath, fileName);
+                await CopyFile(sourceFilePath, destFilePath);
             }
         }
     }
 
-    // Méthode pour copier le fichier depuis StreamingAssets vers persistentDataPath
-    private void CopyFile(string sourcePath, string destinationPath)
+    private async Task CopyFile(string sourcePath, string destinationPath)
     {
-        // Vérifie si le fichier existe déjà dans le répertoire de destination
-        if (File.Exists(destinationPath))
+        await Task.Run(() =>
         {
-            Debug.Log("Le fichier existe déjà dans persistentDataPath.");
-            return;
-        }
+            if (File.Exists(destinationPath))
+            {
+                Debug.Log($"Fichier déjà existant : {destinationPath}");
+                return;
+            }
 
-        // Vérifie si le fichier existe dans StreamingAssets
-        if (File.Exists(sourcePath))
-        {
-            // Copie le fichier depuis StreamingAssets vers persistentDataPath
-            File.Copy(sourcePath, destinationPath);
-            Debug.Log("Fichier copiée dans persistentDataPath.");
-        }
-        else
-        {
-            Debug.LogError("Le fichier source n'existe pas dans StreamingAssets.");
-        }
+            if (File.Exists(sourcePath))
+            {
+                File.Copy(sourcePath, destinationPath);
+                Debug.Log($"Copie : {sourcePath} ? {destinationPath}");
+            }
+            else
+            {
+                Debug.LogError($"Fichier source introuvable : {sourcePath}");
+            }
+        });
     }
 
-    private void CreateFolder(string destinationPath)
+    private async Task CreateFolder(string path)
     {
-        if (Directory.Exists(destinationPath))
+        await Task.Run(() =>
         {
-            Debug.Log("Le dossier existe déjà dans persistentDataPath.");
-            return;
-        }
-
-        Directory.CreateDirectory(destinationPath);
-        Debug.Log("Dossier créé dans persistentDataPath.");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+                Debug.Log($"Dossier créé : {path}");
+            }
+            else
+            {
+                Debug.Log($"Dossier existant : {path}");
+            }
+        });
     }
 }
-

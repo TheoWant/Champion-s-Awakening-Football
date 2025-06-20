@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.Playables;
+using Unity.VisualScripting;
 
 public class SwipeEffect : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
@@ -129,7 +130,7 @@ public class SwipeEffect : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
             GetComponent<Image>().color = new Color(imgColor.r, imgColor.g, imgColor.b, Mathf.SmoothStep(1,0,4*time));
             yield return null;
         }
-        Debug.Log("Swiped On Left ? "+_swipeLeft);
+
         switch (_swipeLeft)
         {
             case false:
@@ -149,7 +150,7 @@ public class SwipeEffect : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
         float elapsedTime = 0f;
         float startX = transform.localPosition.x;
         float startZ = transform.localEulerAngles.z;
-        float shortestAngle = Mathf.DeltaAngle(startZ, 0); // Angle de rotation le plus court
+        float shortestAngle = Mathf.DeltaAngle(startZ, 0); // Shortest rotation angle
 
         StartCoroutine(AnswerDisappear());
 
@@ -170,7 +171,7 @@ public class SwipeEffect : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
             yield return null;
         }
 
-        // Assurer la position et rotation finales exactes
+        // Adjust the final position and rotation exactly as we want
         transform.localPosition = _initialPos;
         transform.localEulerAngles = Vector3.zero;
         _topImg.transform.localEulerAngles = Vector3.zero;
@@ -244,12 +245,18 @@ public class SwipeEffect : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
         if (ImpactManager.Instance.state == ImpactManager.State.MATCH)
         {
             Debug.Log("Next card : " + selectedAnswerImpact._nextCard);
+
+            // If there is a card linked to this choice and proc by the random, then we instantiate this card
+
             if (selectedAnswerImpact._nextCard != null)
             {
                 Debug.Log("1");
                 CardMatchManager.Instance.InitNewCard(selectedAnswerImpact._nextCard);
                 Destroy(gameObject);
             }
+
+            // Else we start the simulation back
+
             else
             {
                 Debug.Log("2");
@@ -263,5 +270,12 @@ public class SwipeEffect : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
                 CardMatchManager.Instance.gameObject.SetActive(false);
             }
         }
+
+        // And destroy the card we just swiped
+        else
+        {
+            Destroy(gameObject);
+        }
+
     }
 }

@@ -14,7 +14,7 @@ public class LoadScene : MonoBehaviour
 
     public void LoadSceneOnClick()
     {
-        SceneManager.LoadScene(sceneName);
+        SceneManager.LoadSceneAsync(sceneName);
     }
 
     private void OnEnable()
@@ -32,7 +32,7 @@ public class LoadScene : MonoBehaviour
             }
             else
             {
-                SceneManager.LoadScene(sceneName);
+                SceneManager.LoadSceneAsync(sceneName);
             }
         }
     }
@@ -40,7 +40,7 @@ public class LoadScene : MonoBehaviour
     public IEnumerator LoadSceneAfterFade()
     {
         yield return StartCoroutine(fadeOut.FadeRoutine(0,1));
-
-        SceneManager.LoadScene(sceneName);
+        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
+        yield return op;
     }
 }
