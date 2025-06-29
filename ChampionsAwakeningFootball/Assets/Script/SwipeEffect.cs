@@ -267,7 +267,9 @@ public class SwipeEffect : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
                 
                 MatchSimulation.Instance.isSimulating = true;
                 MatchSimulation.Instance.ResimulateMatch();
+                MatchSimulation.Instance._simulationMenu.SetActive(true);
                 CardMatchManager.Instance.gameObject.SetActive(false);
+
             }
         }
 

@@ -1466,6 +1466,7 @@ GameObject:
   - component: {fileID: 5713316780000693862}
   - component: {fileID: 4446524508286847542}
   - component: {fileID: 5256702621077713704}
+  - component: {fileID: 4541831237489176353}
   m_Layer: 5
   m_Name: Team Display
   m_TagString: Untagged
@@ -1545,7 +1546,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8873167218424293931}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
@@ -1573,6 +1574,21 @@ MonoBehaviour:
   teamDefeatCountText: {fileID: 6807038836065553738}
   teamGoalAvgText: {fileID: 769384975172897436}
   teamPointsText: {fileID: 7904835661479946155}
+--- !u!114 &4541831237489176353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8873167218424293931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 8, y: -8}
+  m_UseGraphicAlpha: 1
 --- !u!1 &8884539101735897799
 GameObject:
   m_ObjectHideFlags: 0

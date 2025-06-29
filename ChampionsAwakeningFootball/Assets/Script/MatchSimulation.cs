@@ -25,6 +25,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
     public TextMeshProUGUI MatchTime;
 
     public GameObject _playerMomentMenu;
+    public GameObject _simulationMenu;
 
     public bool isSimulating;
 
@@ -94,6 +95,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
             {
                 isSimulating = false;
                 _playerMomentMenu.SetActive(true);
+                _simulationMenu.SetActive(false);
                 CardMatchManager.Instance.InitNewCard(CardMatchManager.Instance.FindCard("REMP"));
                 MatchManager.Instance._isOnPitch = false;
                 return;
@@ -103,6 +105,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
             {
                 isSimulating = false;
                 _playerMomentMenu.SetActive(true);
+                _simulationMenu.SetActive(false);
                 CardMatchManager.Instance.InitNewCard();
             }
         }
