@@ -17,16 +17,20 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
     List<string> goalSentences;
     List<string> failSentences;
 
+    [Header("Match messages elements")]
+    public GameObject _simulationMenu;
     [SerializeField] GameObject _messagePrefab;
     [SerializeField] Transform _contentTransform;
     [SerializeField] ScrollRect _scrollRect;
-    [SerializeField] CSVElementLoader csvElementLoader;
-
     public TextMeshProUGUI MatchTime;
 
+    [Header("Player actions elements")]
+    [SerializeField] CSVElementLoader csvElementLoader;
     public GameObject _playerMomentMenu;
-    public GameObject _simulationMenu;
 
+    [Header("Simulation variables")]
+    public GameObject _refereeWhistles;
+    public GameObject EndMatchGameObject;
     public bool isSimulating;
 
     async void Start()
@@ -66,7 +70,12 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
             }
         }
 
-        EndMatch();
+        if(_matchTime == 90 && isSimulating)
+        {
+            Instantiate(_refereeWhistles);
+            yield return new WaitForSeconds(2.5f);
+            EndMatch();
+        }
 
         yield return null;
     }
@@ -109,6 +118,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
                 CardMatchManager.Instance.InitNewCard();
             }
         }
+
     }
 
     ///----------------------------------------------------------------------------------------------------------------------------------------
@@ -257,8 +267,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
     void EndMatch()
     {
         isSimulating = false;
-         
-
+        EndMatchGameObject.SetActive(true);
     }
 
     ///----------------------------------------------------------------------------------------------------------------------------------------

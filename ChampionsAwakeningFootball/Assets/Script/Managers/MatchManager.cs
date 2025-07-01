@@ -27,16 +27,17 @@ public class MatchManager : MonoBehaviourSingleton<MatchManager>
     [SerializeField] Slider _formSlider;
 
     [Header("SCORE :")]
-    [SerializeField] public TextMeshProUGUI _homeTeamName;
     [SerializeField] public int _homeTeamScore;
+    [SerializeField] public int _awayTeamScore;
+    [SerializeField] public TextMeshProUGUI _homeTeamName;
+    [SerializeField] public TextMeshProUGUI _awayTeamName;
     [SerializeField] Image _homeColor1;
     [SerializeField] Image _homeColor2;
-    [SerializeField] public TextMeshProUGUI _awayTeamName;
-    [SerializeField] public int _awayTeamScore;
     [SerializeField] Image _awayColor1;
     [SerializeField] Image _awayColor2;
     [SerializeField] public TextMeshProUGUI _scoreText;
-
+    
+    
     void Start()
     {
         InitStats();
@@ -56,7 +57,7 @@ public class MatchManager : MonoBehaviourSingleton<MatchManager>
         _aggroStat = 50;
         _confidenceStat = 50;
         _disciplineStat = 50;
-        _note = 6;
+        _note = 60;
         _isOnPitch = true;
 
         _goalsScoredText.text = "0";
