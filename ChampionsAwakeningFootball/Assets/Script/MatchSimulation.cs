@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
@@ -64,7 +65,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
             }
             else
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.15f);
                 IncreaseMinuteCounter();
                 yield return null;
             }
@@ -85,12 +86,11 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
     void IncreaseMinuteCounter()
     {
         _matchTime++;
+        MatchTime.text = _matchTime.ToString()+"'";
 
         int actionProb = Random.Range(0, 101);
 
-        MatchTime.text = _matchTime.ToString()+"'";
-
-        if (actionProb <= 10)
+        if (actionProb > 7 && actionProb <= 21)
         {
             isSimulating = false;
             StartCoroutine(ActionInMatch());
@@ -110,7 +110,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
                 return;
             }
 
-            if (actionProb > 10 && actionProb <= 17)
+            if (actionProb <= 7)
             {
                 isSimulating = false;
                 _playerMomentMenu.SetActive(true);
@@ -196,6 +196,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
                     MatchManager.Instance.SetMatchScoreText();
 
                     matchMessage._MainMessageText.text = GoalRandomSentence(MatchDataManager.Instance.currentMatchData._homeTeam.ToUpper(), MatchManager.Instance._scoreText.text);
+                    StartCoroutine(PlayAnim(matchMessage.GetComponent<PlayableDirector>()));
                 }
                 else
                 {
@@ -211,6 +212,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
                     MatchManager.Instance.SetMatchScoreText();
 
                     matchMessage._MainMessageText.text = GoalRandomSentence(MatchDataManager.Instance.currentMatchData._awayTeam.ToUpper(), MatchManager.Instance._scoreText.text);
+                    StartCoroutine(PlayAnim(matchMessage.GetComponent<PlayableDirector>()));
                 }
                 else
                 {
@@ -299,6 +301,12 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
     }
 
     ///----------------------------------------------------------------------------------------------------------------------------------------
+
+    IEnumerator PlayAnim(PlayableDirector pDir)
+    {
+        pDir.Play();
+        yield return null;
+    }
 
     void ContentScroll()
     {

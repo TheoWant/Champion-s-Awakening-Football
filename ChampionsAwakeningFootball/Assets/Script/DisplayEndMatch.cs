@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DisplayEndMatch : MonoBehaviour
 {
+    [Header("--- Result ---")]
     [Header("End match images")]
     [SerializeField] Image topImage;
     [SerializeField] Image bottomImage;
@@ -20,6 +23,14 @@ public class DisplayEndMatch : MonoBehaviour
     [SerializeField] Sprite n_bottom_sprite;
     [SerializeField] Sprite d_bottom_sprite;
 
+    [Header("--- Player Match Recap ---")]
+    [Header("Stats texts to fill")]
+    [SerializeField] TextMeshProUGUI _moralStatTMP;
+    [SerializeField] TextMeshProUGUI _aggressivityStatTMP;
+    [SerializeField] TextMeshProUGUI _confidenceStatTMP;
+    [SerializeField] TextMeshProUGUI _disciplineStatTMP;
+    [SerializeField] TextMeshProUGUI _finalNoteStatTMP;
+
     void Start()
     {
         MatchManager mM = MatchManager.Instance;
@@ -30,14 +41,21 @@ public class DisplayEndMatch : MonoBehaviour
         }
         else if (mM._awayTeamScore == mM._homeTeamScore)
         {
-            /*topImage.sprite = n_top_sprite;
-            bottomImage.sprite = n_bottom_sprite;*/     // TODO IMAGES
+            topImage.sprite = n_top_sprite;
+            bottomImage.sprite = n_bottom_sprite;
         }
         else
         {
             topImage.sprite = d_top_sprite;
             bottomImage.sprite = d_bottom_sprite;
         }
+
+        _moralStatTMP.text = mM._moralStat.ToString();
+        _aggressivityStatTMP.text = mM._aggroStat.ToString();
+        _confidenceStatTMP.text = mM._confidenceStat.ToString();
+        _disciplineStatTMP.text = mM._disciplineStat.ToString();
+        float finalScoreFloat = (mM._note + (((50f - mM._moralStat) + (50f - mM._aggroStat) + (50f - mM._confidenceStat) + (50f - mM._disciplineStat)) / 10)) / 10;
+        _finalNoteStatTMP.text = (Math.Round(finalScoreFloat, 2, MidpointRounding.ToEven)).ToString(); // Round note to first decimal
     }
 
     void Update()
