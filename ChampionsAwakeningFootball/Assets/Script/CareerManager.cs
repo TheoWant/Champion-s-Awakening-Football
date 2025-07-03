@@ -92,7 +92,9 @@ public class CareerManager : MonoBehaviour
 
         careerClickedId = cId;
         if(go != null )
+        {
             go.SetActive(true);
+        }
     }
 
     public void CreateCareer()

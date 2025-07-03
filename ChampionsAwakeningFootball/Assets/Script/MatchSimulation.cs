@@ -90,7 +90,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
 
         int actionProb = Random.Range(0, 101);
 
-        if (actionProb > 7 && actionProb <= 21)
+        if (actionProb > 9 && actionProb <= 21)
         {
             isSimulating = false;
             StartCoroutine(ActionInMatch());
@@ -110,7 +110,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
                 return;
             }
 
-            if (actionProb <= 7)
+            if (actionProb <= 9)
             {
                 isSimulating = false;
                 _playerMomentMenu.SetActive(true);

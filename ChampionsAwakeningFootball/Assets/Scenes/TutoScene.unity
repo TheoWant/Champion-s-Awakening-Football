@@ -841,6 +841,7 @@ MonoBehaviour:
   _fansAndMediaFilledImage: {fileID: 612168878}
   _financesFilledImage: {fileID: 1503122155}
   _personalLifeFilledImage: {fileID: 1639489950}
+  state: 0
 --- !u!4 &212031918
 Transform:
   m_ObjectHideFlags: 0
@@ -1797,6 +1798,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c296d08354c01dd42afeaa990a6f0b97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cardPrefab: {fileID: 0}
+  _cardContainer: {fileID: 0}
+  _cardMessage: {fileID: 0}
+  _classicMatchCard: []
+  _specialMatchCard: []
 --- !u!1 &530767226
 GameObject:
   m_ObjectHideFlags: 0
@@ -4402,6 +4408,10 @@ PrefabInstance:
       propertyPath: _speaker
       value: Entraineur
       objectReference: {fileID: 0}
+    - target: {fileID: 3010192310190367534, guid: 0ddfbbdabc143f14ab3cf24c85cd1896, type: 3}
+      propertyPath: _cardSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ae3e3a981cc933747b291c87142f5bc7, type: 3}
     - target: {fileID: 4035828141661528069, guid: 0ddfbbdabc143f14ab3cf24c85cd1896, type: 3}
       propertyPath: m_Name
       value: CardPrefab 2
@@ -4425,7 +4435,7 @@ PrefabInstance:
     - target: {fileID: 5733897435998007586, guid: 0ddfbbdabc143f14ab3cf24c85cd1896, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 277da4434cde077419a5b1c913ac84c9, type: 3}
+      objectReference: {fileID: 21300000, guid: ae3e3a981cc933747b291c87142f5bc7, type: 3}
     - target: {fileID: 7058079193483055763, guid: 0ddfbbdabc143f14ab3cf24c85cd1896, type: 3}
       propertyPath: m_InitialState
       value: 0
@@ -6703,12 +6713,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3010192310190367534, guid: 0ddfbbdabc143f14ab3cf24c85cd1896, type: 3}
       propertyPath: _message
-      value: "\"Lionnel, on va boire un coup dans un bar entre co\xE9quipiers. Tu
-        viens avec nous ?\""
+      value: '"Lionnel, on va boire un coup dans un bar. Tu viens avec nous ?"'
       objectReference: {fileID: 0}
     - target: {fileID: 3010192310190367534, guid: 0ddfbbdabc143f14ab3cf24c85cd1896, type: 3}
       propertyPath: _speaker
-      value: Entraineur
+      value: "Co\xE9quipiers"
       objectReference: {fileID: 0}
     - target: {fileID: 4035828141661528069, guid: 0ddfbbdabc143f14ab3cf24c85cd1896, type: 3}
       propertyPath: m_Name
@@ -6733,7 +6742,7 @@ PrefabInstance:
     - target: {fileID: 5733897435998007586, guid: 0ddfbbdabc143f14ab3cf24c85cd1896, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: b7e27cbd53c972e4cafad19c039e0110, type: 3}
+      objectReference: {fileID: 21300000, guid: 5c244acdea813524fa18bcfe203ef522, type: 3}
     - target: {fileID: 8093833221028993025, guid: 0ddfbbdabc143f14ab3cf24c85cd1896, type: 3}
       propertyPath: _teamStatImpact
       value: -10
@@ -8558,6 +8567,10 @@ PrefabInstance:
       propertyPath: _speaker
       value: Agent
       objectReference: {fileID: 0}
+    - target: {fileID: 3010192310190367534, guid: 0ddfbbdabc143f14ab3cf24c85cd1896, type: 3}
+      propertyPath: _cardSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: e121e98c19ceba74f8f7d9f526ba8b75, type: 3}
     - target: {fileID: 4035828141661528069, guid: 0ddfbbdabc143f14ab3cf24c85cd1896, type: 3}
       propertyPath: m_Name
       value: CardPrefab
@@ -8577,7 +8590,7 @@ PrefabInstance:
     - target: {fileID: 5733897435998007586, guid: 0ddfbbdabc143f14ab3cf24c85cd1896, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 34c06863e7be09542b0485d96b57e34a, type: 3}
+      objectReference: {fileID: 21300000, guid: e121e98c19ceba74f8f7d9f526ba8b75, type: 3}
     - target: {fileID: 8093833221028993025, guid: 0ddfbbdabc143f14ab3cf24c85cd1896, type: 3}
       propertyPath: _financeStatImpact
       value: -20
