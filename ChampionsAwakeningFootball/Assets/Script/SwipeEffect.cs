@@ -244,13 +244,10 @@ public class SwipeEffect : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
 
         if (ImpactManager.Instance.state == ImpactManager.State.MATCH)
         {
-            Debug.Log("Next card : " + selectedAnswerImpact._nextCard);
-
             // If there is a card linked to this choice and proc by the random, then we instantiate this card
 
             if (selectedAnswerImpact._nextCard != null)
             {
-                Debug.Log("1");
                 CardMatchManager.Instance.InitNewCard(selectedAnswerImpact._nextCard);
                 Destroy(gameObject);
             }
@@ -259,7 +256,6 @@ public class SwipeEffect : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
 
             else
             {
-                Debug.Log("2");
                 foreach (Transform child in CardMatchManager.Instance._cardContainer)
                 {
                     Destroy(child.gameObject);

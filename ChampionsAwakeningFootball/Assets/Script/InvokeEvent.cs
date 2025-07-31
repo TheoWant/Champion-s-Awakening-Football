@@ -31,7 +31,7 @@ public class InvokeEvent : MonoBehaviour
         unityEvent.Invoke();
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         if (invokeMoment != InvokeMoment.Update) { return; }

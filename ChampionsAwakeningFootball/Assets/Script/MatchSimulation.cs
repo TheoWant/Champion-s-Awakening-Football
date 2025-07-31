@@ -36,15 +36,21 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
 
     async void Start()
     {
-        _matchTime = 1;
+        _matchTime = 0;
         _homeStrength = (int)MatchDataManager.Instance.currentMatchData._homeTeamStrength+5;
         _awayStrength = (int)MatchDataManager.Instance.currentMatchData._awayTeamStrength;
 
-        isSimulating = true;
+        isSimulating = false;
         MatchTime.text = _matchTime+"'";
 
         await csvElementLoader.LoadCardsAsync();
         await csvElementLoader.LoadMatchSentencesAsync();
+
+    }
+
+    public void IsSimulating(bool value)
+    {
+        isSimulating = value;
 
         StartCoroutine(SimulateMatch());
     }
@@ -89,6 +95,8 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
         MatchTime.text = _matchTime.ToString()+"'";
 
         int actionProb = Random.Range(0, 101);
+
+        if (_matchTime < 6) return;
 
         if (actionProb > 9 && actionProb <= 21)
         {
@@ -201,6 +209,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
                 else
                 {
                     matchMessage._MainMessageText.text = FailRandomSentence(MatchManager.Instance._scoreText.text);
+
                 }
                 matchMessage._background.color = MatchManager.Instance.HexToRgbColor(MatchDataManager.Instance.currentMatchData._homeTeamColors[0]);
 

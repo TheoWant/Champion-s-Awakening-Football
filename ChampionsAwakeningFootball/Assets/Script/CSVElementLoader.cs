@@ -103,6 +103,8 @@ public class CSVElementLoader : MonoBehaviour
         save.cardMatchList = Cards;
 
         SaveManagement.Write(save , Path.Combine(Application.persistentDataPath, "CardMatch.xml"));
+
+        return;
     }
 
     public async Task LoadMatchSentencesAsync()
@@ -144,5 +146,7 @@ public class CSVElementLoader : MonoBehaviour
         save.cardMatchList = Cards;
 
         SaveManagement.Write(save, Path.Combine(Application.persistentDataPath, "SentencesMatch.xml"));
+
+        return;
     }
 }

@@ -29,12 +29,6 @@ public class MatchManager : MonoBehaviourSingleton<MatchManager>
     [Header("SCORE :")]
     [SerializeField] public int _homeTeamScore;
     [SerializeField] public int _awayTeamScore;
-    [SerializeField] public TextMeshProUGUI _homeTeamName;
-    [SerializeField] public TextMeshProUGUI _awayTeamName;
-    [SerializeField] Image _homeColor1;
-    [SerializeField] Image _homeColor2;
-    [SerializeField] Image _awayColor1;
-    [SerializeField] Image _awayColor2;
     [SerializeField] public TextMeshProUGUI _scoreText;
     
     
@@ -74,15 +68,8 @@ public class MatchManager : MonoBehaviourSingleton<MatchManager>
 
     void InitScoreCard()
     {
-        _homeTeamName.text = MatchDataManager.Instance.currentMatchData._homeTeam;
-        _homeColor1.color = HexToRgbColor(MatchDataManager.Instance.currentMatchData._homeTeamColors[0]);
-        _homeColor2.color = HexToRgbColor(MatchDataManager.Instance.currentMatchData._homeTeamColors[1]);
-
-        _awayTeamName.text = MatchDataManager.Instance.currentMatchData._awayTeam;
-        _awayColor1.color = HexToRgbColor(MatchDataManager.Instance.currentMatchData._awayTeamColors[0]);
-        _awayColor2.color = HexToRgbColor(MatchDataManager.Instance.currentMatchData._awayTeamColors[1]);
-
         _isPlayerHome = MatchDataManager.Instance.currentMatchData._isPlayerHome;
+
         _homeTeamScore = 0; _awayTeamScore = 0;
         SetMatchScoreText();
     }
@@ -95,7 +82,7 @@ public class MatchManager : MonoBehaviourSingleton<MatchManager>
     public Color HexToRgbColor(string hexColor)
     {
         Color rgbColor;
-        if (ColorUtility.TryParseHtmlString(hexColor, out rgbColor)){ return rgbColor; }
-        else { Debug.LogWarning("Invalid HexColor"); return new Color(255f,255f,255f); }
+        if (ColorUtility.TryParseHtmlString(hexColor, out rgbColor)) { return rgbColor; }
+        else { Debug.LogWarning("Invalid HexColor"); return new Color(255f, 255f, 255f); }
     }
 }

@@ -55,7 +55,8 @@ public class DisplayEndMatch : MonoBehaviour
         _confidenceStatTMP.text = mM._confidenceStat.ToString();
         _disciplineStatTMP.text = mM._disciplineStat.ToString();
         float finalScoreFloat = (mM._note + (((50f - mM._moralStat) + (50f - mM._aggroStat) + (50f - mM._confidenceStat) + (50f - mM._disciplineStat)) / 10)) / 10;
-        _finalNoteStatTMP.text = (Math.Round(finalScoreFloat, 2, MidpointRounding.ToEven)).ToString(); // Round note to first decimal
+        double finalNote = finalScoreFloat > 10 ? 10 : (Math.Round(finalScoreFloat, 1, MidpointRounding.ToEven)); // Round note to first decimal OR Round to 10 if upper.
+        _finalNoteStatTMP.text = finalNote.ToString();
     }
 
     void Update()
