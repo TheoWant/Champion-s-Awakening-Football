@@ -107,10 +107,13 @@ public class CareerManager : MonoBehaviour
 
             int countryId = 0, leagueId = 0;
 
+            GameManager.Instance.PlayerTeamName = ClubDisplayDropdown.options[ClubDisplayDropdown.value].text;
+
             using (var command = connection.CreateCommand())
             {
-                int careerTableInt = careerClickedId + 1;
-                command.CommandText = $"SELECT league_id FROM teams_career_{careerTableInt} WHERE name = @ClubName;";
+                GameManager.Instance.CareerNumber = careerClickedId + 1;
+                
+                command.CommandText = $"SELECT league_id FROM teams_career_{GameManager.Instance.CareerNumber} WHERE name = @ClubName;";
                 command.Parameters.AddWithValue("@ClubName", ClubDisplayDropdown.options[ClubDisplayDropdown.value].text);
                 using (var reader = command.ExecuteReader())
                 {
@@ -124,9 +127,10 @@ public class CareerManager : MonoBehaviour
                 }
             }
 
+            GameManager.Instance.SetPlayerLeagueNameFromID(leagueId);
+
             using (var command = connection.CreateCommand())
             {
-                int careerTableInt = careerClickedId + 1;
                 command.CommandText = $"SELECT country_id FROM leagues WHERE id = @leagueId;";
                 command.Parameters.AddWithValue("@leagueId", leagueId);
                 using (var reader = command.ExecuteReader())
@@ -140,6 +144,8 @@ public class CareerManager : MonoBehaviour
                     }
                 }
             }
+
+            GameManager.Instance.SetPlayerCountryFromID(countryId);
 
             using (var command1 = connection.CreateCommand())
             {
@@ -178,7 +184,7 @@ public class CareerManager : MonoBehaviour
                                 case "n":
                                     break;
                             }
-                            PlayerManager.Instance.InitPlayer(Convert.ToInt32(reader["id"]), reader["firstName"].ToString(), reader["lastName"].ToString(), Convert.ToInt32(reader["age"]), reader["club"].ToString(), Convert.ToInt32(reader["club_country_id"]), Convert.ToInt32(reader["club_league_id"]),  Convert.ToInt32(reader["teamStat"]), Convert.ToInt32(reader["skillStat"]), Convert.ToInt32(reader["fansMediaStat"]), Convert.ToInt32(reader["financeStat"]), Convert.ToInt32(reader["personalLifeStat"]), tutoStatus);
+                            PlayerManager.Instance.InitPlayer(Convert.ToInt32(reader["id"]), reader["firstName"].ToString(), reader["lastName"].ToString(), Convert.ToInt32(reader["age"]), reader["club"].ToString(), Convert.ToInt32(reader["club_country_id"]), Convert.ToInt32(reader["club_league_id"]), 100.0f,Convert.ToInt32(reader["teamStat"]), Convert.ToInt32(reader["skillStat"]), Convert.ToInt32(reader["fansMediaStat"]), Convert.ToInt32(reader["financeStat"]), Convert.ToInt32(reader["personalLifeStat"]), tutoStatus);
                         }
                     }
                 }
@@ -214,7 +220,14 @@ public class CareerManager : MonoBehaviour
                                 case "n":
                                     break;
                             }
-                            PlayerManager.Instance.InitPlayer(Convert.ToInt32(reader["id"]), reader["firstName"].ToString(), reader["lastName"].ToString(), Convert.ToInt32(reader["age"]), reader["club"].ToString(), Convert.ToInt32(reader["club_country_id"]), Convert.ToInt32(reader["club_league_id"]), Convert.ToInt32(reader["teamStat"]), Convert.ToInt32(reader["skillStat"]), Convert.ToInt32(reader["fansMediaStat"]), Convert.ToInt32(reader["financeStat"]), Convert.ToInt32(reader["personalLifeStat"]), tutoStatus);
+                            ///// Attention !! A modifier !!! ////
+                            PlayerManager.Instance.InitPlayer(Convert.ToInt32(reader["id"]), reader["firstName"].ToString(), reader["lastName"].ToString(), Convert.ToInt32(reader["age"]), reader["club"].ToString(), Convert.ToInt32(reader["club_country_id"]), Convert.ToInt32(reader["club_league_id"]), 100.0f , Convert.ToInt32(reader["teamStat"]), Convert.ToInt32(reader["skillStat"]), Convert.ToInt32(reader["fansMediaStat"]), Convert.ToInt32(reader["financeStat"]), Convert.ToInt32(reader["personalLifeStat"]), tutoStatus);
+                            //////////////////////////////////////
+
+                            GameManager.Instance.CareerNumber = Convert.ToInt32(reader["id"]);
+                            GameManager.Instance.PlayerTeamName = reader["club"].ToString(); 
+                            GameManager.Instance.SetPlayerLeagueNameFromID(Convert.ToInt32(reader["club_league_id"]));
+                            GameManager.Instance.SetPlayerCountryFromID(Convert.ToInt32(reader["club_country_id"]));
                         }
                     }
                 }

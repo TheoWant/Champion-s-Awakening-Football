@@ -5,15 +5,23 @@ using System.IO;
 using TMPro;
 using UnityEngine;
 
-public class CardMatchManager : MonoBehaviourSingleton<CardMatchManager>
+public class CardManager : MonoBehaviourSingleton<CardManager>
 {
+    public GAMEMODE GameMode;
     [SerializeField] GameObject _cardPrefab;
     [SerializeField] public Transform _cardContainer;
 
     [SerializeField] TextMeshProUGUI _cardMessage;
 
-    public List<CardMatch> _classicMatchCard;
-    public List<CardMatch> _specialMatchCard;
+    public List<CardMatch> _classicCard;
+    public List<CardMatch> _specialCard;
+
+    public enum GAMEMODE
+    {
+        Tuto,
+        Main,
+        Match
+    }
 
     private void Awake()
     {
@@ -22,7 +30,18 @@ public class CardMatchManager : MonoBehaviourSingleton<CardMatchManager>
 
     void LoadCards()
     {
-        string filePath = Path.Combine(Application.persistentDataPath, "CardMatch.xml");
+        string filePath = "";
+        switch (GameMode)
+        {
+            case GAMEMODE.Tuto:
+                break;
+            case GAMEMODE.Main:
+                filePath = Path.Combine(Application.persistentDataPath, "CardGame.xml");
+                break;
+            case GAMEMODE.Match:
+                filePath = Path.Combine(Application.persistentDataPath, "CardMatch.xml");
+                break;
+        }
 
         if (File.Exists(filePath))
         {
@@ -30,10 +49,19 @@ public class CardMatchManager : MonoBehaviourSingleton<CardMatchManager>
             {
                 foreach (CardMatch card in saveObject.cardMatchList)
                 {
-                    if (card._id.Substring(0, 2) == "EM")
-                        _classicMatchCard.Add(card);
-                    else
-                        _specialMatchCard.Add(card);
+                    if (GameMode == GAMEMODE.Main) {
+                        if (card._id.Substring(0, 2) == "HM")
+                            _classicCard.Add(card);
+                        else
+                            _specialCard.Add(card);
+                    }
+                    
+                    else if (GameMode == GAMEMODE.Match) {
+                        if (card._id.Substring(0, 2) == "EM")
+                            _classicCard.Add(card);
+                        else
+                            _specialCard.Add(card);
+                    }
                 }
             }
         }
@@ -41,30 +69,32 @@ public class CardMatchManager : MonoBehaviourSingleton<CardMatchManager>
 
     public void InitNewCard(CardMatch? cm = null)
     {
+        if(GameMode == GAMEMODE.Tuto)return;
+
         GameObject newCard = Instantiate(_cardPrefab, _cardContainer);
 
         CardDatas cd = newCard.GetComponent<CardDatas>();
-        if (_classicMatchCard.Count == 0) { return; }
+        if (_classicCard.Count == 0) { return; }
 
         if(cm ==  null)
-            cm = _classicMatchCard[UnityEngine.Random.Range(0, (_classicMatchCard.Count))];
+            cm = _classicCard[UnityEngine.Random.Range(0, (_classicCard.Count))];
 
         Debug.Log(cm._text);
 
         cd._message = cm._text;
         cd._answer1 = cm._choice_A;
         cd._answer2 = cm._choice_B;
-
-        Debug.Log(Path.Combine(Application.persistentDataPath, "Card", cm.imageFileName));
+        Debug.Log("FILE NAME = "+cm.imageFileName);
+        Debug.Log("PATH + "+Path.Combine(Application.persistentDataPath, "Card", cm.imageFileName));
 
         cd._cardSprite = LoadSprite(Path.Combine(Application.persistentDataPath, "Card", cm.imageFileName));
         cd._cardImage.sprite = cd._cardSprite;
 
         _cardMessage.text = cd._message;
 
-        SetupImpact(cd.answer1Text.GetComponent<AnswerImpact>(), cm._impactC1, cm.nextCard_ChoiceA_1, cm.nextCard_ChoiceA_2, cm.proba_nC_CA1);
-        SetupImpact(cd.answer2Text.GetComponent<AnswerImpact>(), cm._impactC2, cm.nextCard_ChoiceB_1, cm.nextCard_ChoiceB_2, cm.proba_nC_CB1);
-        ApplyStatImpact(cm._id);
+        SetupMatchImpact(cd.answer1Text.GetComponent<AnswerImpact>(), cm._impactC1, cm.nextCard_ChoiceA_1, cm.nextCard_ChoiceA_2, cm.proba_nC_CA1);
+        SetupMatchImpact(cd.answer2Text.GetComponent<AnswerImpact>(), cm._impactC2, cm.nextCard_ChoiceB_1, cm.nextCard_ChoiceB_2, cm.proba_nC_CB1);
+        ApplyMatchStatImpact(cm._id);
     }
 
     string RandomNextCard(string id1, string id2, int probaId1)
@@ -77,7 +107,7 @@ public class CardMatchManager : MonoBehaviourSingleton<CardMatchManager>
 
     public CardMatch FindCard(string id)
     {
-        foreach (CardMatch card in _specialMatchCard) {
+        foreach (CardMatch card in _specialCard) {
             if (card._id == id)
             {
                 return card;
@@ -86,7 +116,7 @@ public class CardMatchManager : MonoBehaviourSingleton<CardMatchManager>
         return null;
     }
 
-    void SetupImpact(AnswerImpact ai, int[] impacts, string id1, string id2, int proba)
+    void SetupMatchImpact(AnswerImpact ai, int[] impacts, string id1, string id2, int proba)
     {
         ai._formStatImpact = impacts[0];
         ai._moralStatImpact = impacts[1];
@@ -103,7 +133,7 @@ public class CardMatchManager : MonoBehaviourSingleton<CardMatchManager>
         }
     }
 
-    void ApplyStatImpact(string id)
+    void ApplyMatchStatImpact(string id)
     {
         if (string.IsNullOrEmpty(id)) return;
 

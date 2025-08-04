@@ -17,6 +17,7 @@ public class PlayerManager : MonoBehaviourSingletonPersistent<PlayerManager>
     public string _club;
     public int _clubCountryId;
     public int _clubLeagueId;
+    public float _form;
 
     public int _teamStatValue;
     public int _skillStatValue;
@@ -33,7 +34,7 @@ public class PlayerManager : MonoBehaviourSingletonPersistent<PlayerManager>
         dbName = Path.Combine(Application.persistentDataPath, "Teams.db");
     }
 
-    public void InitPlayer(int id, string firstName, string lastName, int age, string club, int club_country_id, int club_league_id, int teamStat, int skillStat, int fansMediaStat, int financeStat, int personalLifeStat, bool isTutoDone)
+    public void InitPlayer(int id, string firstName, string lastName, int age, string club, int club_country_id, int club_league_id, float form , int teamStat, int skillStat, int fansMediaStat, int financeStat, int personalLifeStat, bool isTutoDone)
     {
         _id = id;
         _firstName = firstName;
@@ -42,6 +43,7 @@ public class PlayerManager : MonoBehaviourSingletonPersistent<PlayerManager>
         _club = club;
         _clubCountryId = club_country_id;
         _clubLeagueId = club_league_id;
+        _form = form;
         _teamStatValue = teamStat;
         _skillStatValue = skillStat;
         _fansMediaStatValue = fansMediaStat;

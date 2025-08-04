@@ -30,8 +30,8 @@ public class MatchManager : MonoBehaviourSingleton<MatchManager>
     [SerializeField] public int _homeTeamScore;
     [SerializeField] public int _awayTeamScore;
     [SerializeField] public TextMeshProUGUI _scoreText;
-    
-    
+
+
     void Start()
     {
         InitStats();
@@ -46,13 +46,13 @@ public class MatchManager : MonoBehaviourSingleton<MatchManager>
 
     void InitStats()
     {
-        _formStat = 100;
+        _formStat = MatchDataManager.Instance.currentMatchData._playerForm;
         _moralStat = 50;
         _aggroStat = 50;
         _confidenceStat = 50;
         _disciplineStat = 50;
         _note = 60;
-        _isOnPitch = true;
+        _isOnPitch = MatchDataManager.Instance.currentMatchData._playerForm > 30 ? true : false;
 
         _goalsScoredText.text = "0";
         _assistsText.text = "0";

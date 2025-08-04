@@ -26,7 +26,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
     public TextMeshProUGUI MatchTime;
 
     [Header("Player actions elements")]
-    [SerializeField] CSVElementLoader csvElementLoader;
+    [SerializeField] CardsMatchLoader csvElementLoader;
     public GameObject _playerMomentMenu;
 
     [Header("Simulation variables")]
@@ -113,7 +113,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
                 isSimulating = false;
                 _playerMomentMenu.SetActive(true);
                 _simulationMenu.SetActive(false);
-                CardMatchManager.Instance.InitNewCard(CardMatchManager.Instance.FindCard("REMP"));
+                CardManager.Instance.InitNewCard(CardManager.Instance.FindCard("REMP"));
                 MatchManager.Instance._isOnPitch = false;
                 return;
             }
@@ -123,7 +123,7 @@ public class MatchSimulation : MonoBehaviourSingleton<MatchSimulation>
                 isSimulating = false;
                 _playerMomentMenu.SetActive(true);
                 _simulationMenu.SetActive(false);
-                CardMatchManager.Instance.InitNewCard();
+                CardManager.Instance.InitNewCard();
             }
         }
 

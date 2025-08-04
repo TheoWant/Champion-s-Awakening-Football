@@ -6,6 +6,7 @@ using UnityEngine;
 public class MatchData
 {
     [Header("Data for setting up | Init before a match")]
+    public float _playerForm;
     public string _homeTeam;
     public string _awayTeam;
     public float _homeTeamStrength;
@@ -29,10 +30,11 @@ public class MatchDataManager : MonoBehaviourSingletonPersistent<MatchDataManage
 {
     public MatchData currentMatchData;
 
-    public void SetUpNewMatch(string home, string away, float homeStr, float awayStr, string playerClub, string homeColor1, string homeColor2, string awayColor1, string awayColor2)
+    public void SetUpNewMatch(float playerForm, string home, string away, float homeStr, float awayStr, string playerClub, string homeColor1, string homeColor2, string awayColor1, string awayColor2)
     {
         currentMatchData = new MatchData
         {
+            _playerForm = playerForm,
             _homeTeam = home,
             _awayTeam = away,
             _homeTeamStrength = homeStr,

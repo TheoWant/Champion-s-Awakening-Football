@@ -13,7 +13,6 @@ public class SaveManagement : MonoBehaviourSingleton<SaveManagement>
     private void Awake()
     {
         FilePath = Application.persistentDataPath;
-        Debug.Log(FilePath);
     }
 
     public T CastObject<T>(object input)

@@ -244,30 +244,13 @@ public class SwipeEffect : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
 
         if (ImpactManager.Instance.state == ImpactManager.State.MATCH)
         {
-            // If there is a card linked to this choice and proc by the random, then we instantiate this card
-
-            if (selectedAnswerImpact._nextCard != null)
-            {
-                CardMatchManager.Instance.InitNewCard(selectedAnswerImpact._nextCard);
-                Destroy(gameObject);
-            }
-
-            // Else we start the simulation back
-
-            else
-            {
-                foreach (Transform child in CardMatchManager.Instance._cardContainer)
-                {
-                    Destroy(child.gameObject);
-                }
-                
-                MatchSimulation.Instance.isSimulating = true;
-                MatchSimulation.Instance.ResimulateMatch();
-                MatchSimulation.Instance._simulationMenu.SetActive(true);
-                CardMatchManager.Instance.gameObject.SetActive(false);
-
-            }
+            CardEventManager.Instance.MatchCardEvent(selectedAnswerImpact, gameObject);
         }
+        else if (ImpactManager.Instance.state == ImpactManager.State.MAINGAME)
+        {
+            CardEventManager.Instance.MainGameEvent(selectedAnswerImpact, gameObject);
+        }
+
 
         // And destroy the card we just swiped
         else

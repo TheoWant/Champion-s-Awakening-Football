@@ -28,7 +28,7 @@ public class CardMatch
     public string imageFileName;
 }
 
-public class CSVElementLoader : MonoBehaviour
+public class CardsMatchLoader : MonoBehaviour
 {
     string cards_path;
     string sentences_path;

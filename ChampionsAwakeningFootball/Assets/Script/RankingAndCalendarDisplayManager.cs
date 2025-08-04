@@ -25,7 +25,7 @@ public class RankingAndCalendarDisplayManager : MonoBehaviour
     private List<GameObject> GameObjectDisplayed = new List<GameObject>();
 
     private LeagueCalendar calendar = new LeagueCalendar();
-    private int matchDay;
+    private int displayedMatchDay;
     public Button prevBtn, nextBtn;
     public TextMeshProUGUI displayMatchDayInt;
 
@@ -267,7 +267,7 @@ public class RankingAndCalendarDisplayManager : MonoBehaviour
 
                 if (Directory.Exists(folderPath) && Directory.GetFiles(folderPath).Count() > 0)
                 {
-                    Debug.Log(folderPath + leagueName + ".xml");
+                    Debug.Log(folderPath +"/"+leagueName + ".xml");
                     if (SaveManagement.Instance.Read(out SaveObject saveObject, folderPath+"/"+leagueName+".xml"))
                     {
                         calendar = saveObject.calendarData;
@@ -275,7 +275,7 @@ public class RankingAndCalendarDisplayManager : MonoBehaviour
                     }
                 }
 
-                matchDay = 1;
+                displayedMatchDay = 1;
 
                 DisplayCalendarMatchDays();
 
@@ -285,13 +285,13 @@ public class RankingAndCalendarDisplayManager : MonoBehaviour
 
     void DisplayCalendarMatchDays()
     {
-        displayMatchDayInt.text = $"Journée {matchDay}";
+        displayMatchDayInt.text = $"Journée {displayedMatchDay}";
 
-        if (matchDay == 1) { prevBtn.interactable = false; }
-        else if (matchDay == calendar.MatchDays.Count()) { nextBtn.interactable = false; }
+        if (displayedMatchDay == 1) { prevBtn.interactable = false; }
+        else if (displayedMatchDay == calendar.MatchDays.Count()) { nextBtn.interactable = false; }
         else { prevBtn.interactable = true; nextBtn.interactable = true; }
 
-        List<CalendarMatchData> matchsDayToDisplay = calendar.MatchDays[matchDay-1];
+        List<CalendarMatchData> matchsDayToDisplay = calendar.MatchDays[displayedMatchDay-1];
 
         foreach (GameObject matchObject in GameObjectDisplayed)
         {
@@ -316,8 +316,8 @@ public class RankingAndCalendarDisplayManager : MonoBehaviour
 
     public void ChangeMatchDay(bool prev)
     {
-        if (prev) { matchDay--; }
-        else { matchDay++; }
+        if (prev) { displayedMatchDay--; }
+        else { displayedMatchDay++; }
         DisplayCalendarMatchDays();
     }
 

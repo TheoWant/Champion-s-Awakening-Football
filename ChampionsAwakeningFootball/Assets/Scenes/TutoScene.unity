@@ -1877,6 +1877,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c296d08354c01dd42afeaa990a6f0b97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isTuto: 1
   _cardPrefab: {fileID: 0}
   _cardContainer: {fileID: 0}
   _cardMessage: {fileID: 0}

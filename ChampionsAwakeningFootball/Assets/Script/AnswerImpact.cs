@@ -10,6 +10,7 @@ public class AnswerImpact : MonoBehaviour
     [SerializeField] public float _fansMediaStatImpact;
     [SerializeField] public float _financeStatImpact;
     [SerializeField] public float _personalLifeStatImpact;
+    [SerializeField] public float _playerFormStatImpact;
 
     [Header("Match stat")]
     [SerializeField] public float _formStatImpact;

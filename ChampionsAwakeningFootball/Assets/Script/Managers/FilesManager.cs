@@ -52,14 +52,12 @@ public class FilesManager : MonoBehaviour
         {
             if (File.Exists(destinationPath))
             {
-                Debug.Log($"Fichier déjà existant : {destinationPath}");
                 return;
             }
 
             if (File.Exists(sourcePath))
             {
                 File.Copy(sourcePath, destinationPath);
-                Debug.Log($"Copie : {sourcePath} ? {destinationPath}");
             }
             else
             {
@@ -75,11 +73,6 @@ public class FilesManager : MonoBehaviour
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
-                Debug.Log($"Dossier créé : {path}");
-            }
-            else
-            {
-                Debug.Log($"Dossier existant : {path}");
             }
         });
     }
